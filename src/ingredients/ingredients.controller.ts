@@ -11,7 +11,7 @@ import {
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
-import { SchemaValidationPipe } from 'src/pipes/schema-validation/schema-validation.pipe';
+import { SchemaValidationPipe } from '../pipes/schema-validation/schema-validation.pipe';
 import { createIngredientSchema } from './schemas/create-ingredient.schema';
 
 @Controller('ingredients')
