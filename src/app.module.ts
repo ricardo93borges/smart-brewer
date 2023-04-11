@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IngredientsModule } from './ingredients/ingredients.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { IngredientsModule } from './ingredients/ingredients.module';
       // synchronize: true,
     }),
     IngredientsModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

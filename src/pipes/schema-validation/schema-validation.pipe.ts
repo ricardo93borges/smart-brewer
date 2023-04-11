@@ -11,6 +11,10 @@ export class SchemaValidationPipe implements PipeTransform {
   constructor(private schema: ObjectSchema) {}
 
   transform(value: any, metadata: ArgumentMetadata) {
+    if (metadata.type !== 'body') {
+      return value;
+    }
+
     const { error } = this.schema.validate(value);
     if (error) {
       const errMessage = error.details.map((d) => d.message).join('.');
