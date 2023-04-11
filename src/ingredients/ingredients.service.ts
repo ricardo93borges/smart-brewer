@@ -1,3 +1,4 @@
+import { ObjectID } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
@@ -20,15 +21,15 @@ export class IngredientsService {
     return this.ingredientRepository.find();
   }
 
-  findOne(id: number) {
-    return this.ingredientRepository.findOneBy({ id });
+  findOne(id: ObjectID) {
+    return this.ingredientRepository.findOneBy({ _id: id });
   }
 
-  update(id: number, updateIngredientDto: UpdateIngredientDto) {
+  update(id: ObjectID, updateIngredientDto: UpdateIngredientDto) {
     return this.ingredientRepository.update(id, updateIngredientDto);
   }
 
-  remove(id: number) {
+  remove(id: ObjectID) {
     return this.ingredientRepository.delete(id);
   }
 }

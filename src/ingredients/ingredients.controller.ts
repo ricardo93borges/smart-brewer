@@ -12,6 +12,7 @@ import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { SchemaValidationPipe } from '../pipes/schema-validation/schema-validation.pipe';
+import { ParseObjectIdPipe } from '../pipes/parse-object-id/parse-object-id.pipe';
 import { createIngredientSchema } from './schemas/create-ingredient.schema';
 
 @Controller('ingredients')
@@ -30,21 +31,21 @@ export class IngredientsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ingredientsService.findOne(+id);
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.ingredientsService.findOne(id);
   }
 
   @Patch(':id')
   @UsePipes(new SchemaValidationPipe(createIngredientSchema))
   update(
-    @Param('id') id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateIngredientDto: UpdateIngredientDto,
   ) {
-    return this.ingredientsService.update(+id, updateIngredientDto);
+    return this.ingredientsService.update(id, updateIngredientDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ingredientsService.remove(+id);
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.ingredientsService.remove(id);
   }
 }

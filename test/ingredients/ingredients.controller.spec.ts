@@ -102,7 +102,7 @@ describe('IngredientsController', () => {
 
       const result = await ingredientsController.findOne(id);
 
-      expect(findOneSpy).toHaveBeenCalledWith(+id);
+      expect(findOneSpy).toHaveBeenCalledWith(id);
       expect(result).toBe(ingredient);
     });
   });
@@ -126,7 +126,7 @@ describe('IngredientsController', () => {
         updateIngredientDto,
       );
 
-      expect(updateSpy).toHaveBeenCalledWith(+id, updateIngredientDto);
+      expect(updateSpy).toHaveBeenCalledWith(id, updateIngredientDto);
       expect(result).toEqual({ raw: '', affected: 1, generatedMaps: [] });
     });
   });
@@ -141,7 +141,7 @@ describe('IngredientsController', () => {
 
       const result = await ingredientsController.remove(id);
 
-      expect(removeSpy).toHaveBeenCalledWith(+id);
+      expect(removeSpy).toHaveBeenCalledWith(id);
       expect(result).toEqual({ raw: '', affected: 1 });
     });
   });

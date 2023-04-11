@@ -22,7 +22,7 @@ export class SettingsService {
   }
 
   findOne(id: ObjectID) {
-    return this.settingsRepository.findOneBy({ id });
+    return this.settingsRepository.findOneBy({ _id: id });
   }
 
   update(id: ObjectID, updateSettingDto: UpdateSettingDto) {

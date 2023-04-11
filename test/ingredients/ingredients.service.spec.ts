@@ -84,9 +84,9 @@ describe('IngredientsService', () => {
         .spyOn(ingredientRepository, 'findOneBy')
         .mockResolvedValueOnce(ingredient);
 
-      const result = await ingredientsService.findOne(+id);
+      const result = await ingredientsService.findOne(id);
 
-      expect(findOneBySpy).toHaveBeenCalledWith({ id: +id });
+      expect(findOneBySpy).toHaveBeenCalledWith({ _id: id });
       expect(result).toBe(ingredient);
     });
   });
