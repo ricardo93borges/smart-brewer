@@ -1,42 +1,25 @@
 import { ObjectID } from 'mongodb';
-import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 import {
   Ingredient,
   IngredientType,
 } from '../../src/ingredients/entities/ingredient.entity';
-import { IngredientsController } from '../../src/ingredients/ingredients.controller';
 import { IngredientsService } from '../../src/ingredients/ingredients.service';
-import { CreateIngredientDto } from 'src/ingredients/dto/create-ingredient.dto';
-import { UpdateIngredientDto } from 'src/ingredients/dto/update-ingredient.dto';
+import { CreateIngredientDto } from '../../src/ingredients/dto/create-ingredient.dto';
+import { UpdateIngredientDto } from '../../src/ingredients/dto/update-ingredient.dto';
 
-describe('IngredientsController', () => {
-  let ingredientsController: IngredientsController;
+describe('IngredientsService', () => {
+  let ingredientRepository: MongoRepository<Ingredient>;
   let ingredientsService: IngredientsService;
 
-  beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
-      controllers: [IngredientsController],
-      providers: [
-        IngredientsService,
-        {
-          provide: getRepositoryToken(Ingredient),
-          useValue: {
-            save: jest.fn().mockResolvedValue({}),
-            find: jest.fn().mockResolvedValue([]),
-          },
-        },
-      ],
-    }).compile();
-
-    ingredientsService = moduleRef.get<IngredientsService>(IngredientsService);
-    ingredientsController = moduleRef.get<IngredientsController>(
-      IngredientsController,
-    );
+  beforeAll(() => {
+    // @ts-ignore
+    ingredientRepository = new MongoRepository<Ingredient>();
+    ingredientsService = new IngredientsService(ingredientRepository);
   });
 
   describe('create', () => {
-    it('should call ingredientsService create method', async () => {
+    it('should call Ingredient repository save method', async () => {
       const createIngredientDto: CreateIngredientDto = {
         name: 'milk',
         preparationTime: 3000,
@@ -50,19 +33,19 @@ describe('IngredientsController', () => {
         id: new ObjectID('64342e031a1b721892473843'),
       };
 
-      const createSpy = jest
-        .spyOn(ingredientsService, 'create')
+      const saveSpy = jest
+        .spyOn(ingredientRepository, 'save')
         .mockResolvedValueOnce(ingredient);
 
-      const result = await ingredientsController.create(createIngredientDto);
+      const result = await ingredientsService.create(createIngredientDto);
 
-      expect(createSpy).toHaveBeenCalledWith(createIngredientDto);
-      expect(result).toBe(ingredient);
+      expect(saveSpy).toHaveBeenCalledWith(createIngredientDto);
+      expect(result).toEqual(ingredient);
     });
   });
 
   describe('findAll', () => {
-    it('should return an array of ingredients', async () => {
+    it('should call Ingredient repository find method', async () => {
       const ingredients = [
         {
           id: new ObjectID('64342e031a1b721892473843'),
@@ -74,18 +57,19 @@ describe('IngredientsController', () => {
         },
       ];
 
-      jest
-        .spyOn(ingredientsService, 'findAll')
+      const findSpy = jest
+        .spyOn(ingredientRepository, 'find')
         .mockResolvedValueOnce(ingredients);
 
-      const result = await ingredientsController.findAll();
+      const result = await ingredientsService.findAll();
 
+      expect(findSpy).toHaveBeenCalledTimes(1);
       expect(result).toBe(ingredients);
     });
   });
 
   describe('findOne', () => {
-    it('should return an ingredient', async () => {
+    it('should call Ingredient repository findOneBy method', async () => {
       const id = '64342e031a1b721892473843';
       const ingredient = {
         id: new ObjectID(id),
@@ -96,19 +80,19 @@ describe('IngredientsController', () => {
         maxQuantity: 1000,
       };
 
-      const findOneSpy = jest
-        .spyOn(ingredientsService, 'findOne')
+      const findOneBySpy = jest
+        .spyOn(ingredientRepository, 'findOneBy')
         .mockResolvedValueOnce(ingredient);
 
-      const result = await ingredientsController.findOne(id);
+      const result = await ingredientsService.findOne(+id);
 
-      expect(findOneSpy).toHaveBeenCalledWith(+id);
+      expect(findOneBySpy).toHaveBeenCalledWith({ id: +id });
       expect(result).toBe(ingredient);
     });
   });
 
   describe('update', () => {
-    it('should call ingredientsService update method', async () => {
+    it('should call Ingredient repository update method', async () => {
       const id = '64342e031a1b721892473843';
       const updateIngredientDto: UpdateIngredientDto = {
         name: 'milk',
@@ -118,13 +102,10 @@ describe('IngredientsController', () => {
         maxQuantity: 1000,
       };
       const updateSpy = jest
-        .spyOn(ingredientsService, 'update')
+        .spyOn(ingredientRepository, 'update')
         .mockResolvedValueOnce({ raw: '', affected: 1, generatedMaps: [] });
 
-      const result = await ingredientsController.update(
-        id,
-        updateIngredientDto,
-      );
+      const result = await ingredientsService.update(+id, updateIngredientDto);
 
       expect(updateSpy).toHaveBeenCalledWith(+id, updateIngredientDto);
       expect(result).toEqual({ raw: '', affected: 1, generatedMaps: [] });
@@ -132,16 +113,16 @@ describe('IngredientsController', () => {
   });
 
   describe('remove', () => {
-    it('should call ingredientsService remove method', async () => {
+    it('should call Ingredient repository delete method', async () => {
       const id = '64342e031a1b721892473843';
 
-      const removeSpy = jest
-        .spyOn(ingredientsService, 'remove')
+      const deleteSpy = jest
+        .spyOn(ingredientRepository, 'delete')
         .mockResolvedValueOnce({ raw: '', affected: 1 });
 
-      const result = await ingredientsController.remove(id);
+      const result = await ingredientsService.remove(+id);
 
-      expect(removeSpy).toHaveBeenCalledWith(+id);
+      expect(deleteSpy).toHaveBeenCalledWith(+id);
       expect(result).toEqual({ raw: '', affected: 1 });
     });
   });
