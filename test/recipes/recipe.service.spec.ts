@@ -10,17 +10,24 @@ import {
 import { RecipesService } from '../../src/recipes/recipes.service';
 import { IngredientsService } from '../../src/ingredients/ingredients.service';
 import { CreateRecipeDto } from '../../src/recipes/dto/create-recipe.dto';
+import { SettingsService } from '../../src/settings/settings.service';
 
 describe('RecipesService', () => {
   let recipeRepository: MongoRepository<Recipe>;
   let recipesService: RecipesService;
   let ingredientsService: IngredientsService;
+  let settingsService: SettingsService;
 
   beforeAll(() => {
     // @ts-ignore
     recipeRepository = new MongoRepository<Ingredient>();
     ingredientsService = new IngredientsService(null);
-    recipesService = new RecipesService(recipeRepository, ingredientsService);
+    settingsService = new SettingsService(null);
+    recipesService = new RecipesService(
+      recipeRepository,
+      ingredientsService,
+      settingsService,
+    );
   });
 
   afterEach(() => {
@@ -56,12 +63,17 @@ describe('RecipesService', () => {
         .spyOn(recipeRepository, 'save')
         .mockResolvedValueOnce(recipe);
 
+      const validateRecipeTypeSpy = jest
+        .spyOn(recipesService, 'validateRecipeType')
+        .mockResolvedValueOnce(null);
+
       const result = await recipesService.create(createRecipeDto);
 
       expect(saveSpy).toHaveBeenCalledWith(createRecipeDto);
       expect(validateIngredientsSpy).toHaveBeenCalledWith([
         '64342e031a1b721892473843',
       ]);
+      expect(validateRecipeTypeSpy).toHaveBeenCalledWith(createRecipeDto.type);
       expect(result).toEqual(recipe);
     });
 
@@ -80,7 +92,11 @@ describe('RecipesService', () => {
         ],
       };
 
-      const validateIngredientsSpy = jest
+      const validateRecipeTypeSpy = jest
+        .spyOn(recipesService, 'validateRecipeType')
+        .mockResolvedValueOnce(null);
+
+      jest
         .spyOn(recipesService, 'validateIngredients')
         .mockRejectedValueOnce(new BadRequestException());
 
@@ -90,11 +106,39 @@ describe('RecipesService', () => {
 
       const promise = recipesService.create(createRecipeDto);
 
-      expect(promise).rejects.toThrow(BadRequestException);
+      expect(validateRecipeTypeSpy).toHaveBeenCalledWith(createRecipeDto.type);
       expect(saveSpy).toHaveBeenCalledTimes(0);
-      expect(validateIngredientsSpy).toHaveBeenCalledWith([
-        '64342e031a1b721892473843',
-      ]);
+      expect(promise).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw because recipe type is not enabled', async () => {
+      const createRecipeDto: CreateRecipeDto = {
+        name: 'milk',
+        status: RecipeStatus.ENABLED,
+        type: RecipeType.COFFEE,
+        ingredients: [
+          {
+            ingredientId: '64342e031a1b721892473843',
+            quantity: 1,
+            temperature: 20,
+            order: 1,
+          },
+        ],
+      };
+
+      const validateRecipeTypeSpy = jest
+        .spyOn(recipesService, 'validateRecipeType')
+        .mockRejectedValueOnce(new BadRequestException());
+
+      const saveSpy = jest
+        .spyOn(recipeRepository, 'save')
+        .mockResolvedValueOnce(null);
+
+      const promise = recipesService.create(createRecipeDto);
+
+      expect(validateRecipeTypeSpy).toHaveBeenCalledWith(createRecipeDto.type);
+      expect(saveSpy).toHaveBeenCalledTimes(0);
+      expect(promise).rejects.toThrow(BadRequestException);
     });
   });
 });

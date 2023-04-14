@@ -27,7 +27,7 @@ describe('OrdersService', () => {
     // @ts-ignore
     orderRepository = new MongoRepository<Order>();
     ingredientsService = new IngredientsService(null);
-    recipesService = new RecipesService(null, null);
+    recipesService = new RecipesService(null, null, null);
     ordersService = new OrdersService(
       orderRepository,
       recipesService,

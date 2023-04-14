@@ -10,6 +10,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { Recipe } from './entities/recipe.entity';
 import { IngredientsService } from '../ingredients/ingredients.service';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class RecipesService {
@@ -17,9 +18,10 @@ export class RecipesService {
     @InjectRepository(Recipe)
     private recipeRepository: MongoRepository<Recipe>,
     private ingredientsService: IngredientsService,
+    private settingsService: SettingsService,
   ) {}
 
-  async validateIngredients(ingredientsIds: string[]) {
+  async validateIngredients(ingredientsIds: string[]): Promise<void> {
     const ingredients = await Promise.all(
       ingredientsIds.map((id) =>
         this.ingredientsService.findOne(new ObjectID(id)),
@@ -32,9 +34,26 @@ export class RecipesService {
     }
   }
 
+  async validateRecipeType(type: string): Promise<void> {
+    const enabledRecipeTypes = await this.settingsService.findOneByName(
+      'enabled_recipe_types',
+    );
+
+    if (
+      enabledRecipeTypes &&
+      !enabledRecipeTypes.value.split(',').includes(type)
+    ) {
+      throw new BadRequestException(
+        `Recipe type not enabled. Types enabled: ${enabledRecipeTypes.value}`,
+      );
+    }
+  }
+
   async create(createRecipeDto: CreateRecipeDto) {
-    const { ingredients } = createRecipeDto;
+    const { ingredients, type } = createRecipeDto;
     const ingredientsIds = ingredients.map((i) => i.ingredientId);
+
+    await this.validateRecipeType(type);
     await this.validateIngredients(ingredientsIds);
 
     return this.recipeRepository.save(createRecipeDto);
@@ -49,12 +68,10 @@ export class RecipesService {
   }
 
   async update(id: ObjectID, updateRecipeDto: UpdateRecipeDto) {
-    // TODO return only status code 204
-
     let recipe = await this.findOne(id);
 
     if (!recipe) {
-      throw new NotFoundException();
+      throw new NotFoundException('recipe not found');
     }
 
     recipe = { ...recipe, ...updateRecipeDto };

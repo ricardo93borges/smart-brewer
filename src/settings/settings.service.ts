@@ -25,6 +25,10 @@ export class SettingsService {
     return this.settingsRepository.findOneBy({ _id: id });
   }
 
+  findOneByName(name: string) {
+    return this.settingsRepository.findOneBy({ name });
+  }
+
   update(id: ObjectID, updateSettingDto: UpdateSettingDto) {
     return this.settingsRepository.update(id, updateSettingDto);
   }

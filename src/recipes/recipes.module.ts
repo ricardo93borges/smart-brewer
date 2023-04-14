@@ -4,9 +4,14 @@ import { RecipesController } from './recipes.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Recipe } from './entities/recipe.entity';
 import { IngredientsModule } from 'src/ingredients/ingredients.module';
+import { SettingsModule } from 'src/settings/settings.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Recipe]), IngredientsModule],
+  imports: [
+    TypeOrmModule.forFeature([Recipe]),
+    IngredientsModule,
+    SettingsModule,
+  ],
   controllers: [RecipesController],
   providers: [RecipesService],
   exports: [RecipesService],
