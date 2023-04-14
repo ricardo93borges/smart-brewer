@@ -8,6 +8,7 @@ import {
   Delete,
   UsePipes,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -16,6 +17,8 @@ import { SchemaValidationPipe } from '../pipes/schema-validation/schema-validati
 import { createOrderSchema } from './schemas/create-order.schema';
 import { ParseObjectIdPipe } from '../pipes/parse-object-id/parse-object-id.pipe';
 import { updateOrderSchema } from './schemas/update-order.schema';
+import { findOrdersSchema } from './schemas/find-orders.schema';
+import { OrderStatus } from './entities/order.entity';
 
 @Controller('orders')
 export class OrdersController {
@@ -28,8 +31,9 @@ export class OrdersController {
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  @UsePipes(new SchemaValidationPipe(findOrdersSchema))
+  findAll(@Query('status') status?: OrderStatus) {
+    return this.ordersService.findAll(status);
   }
 
   @Get(':id')

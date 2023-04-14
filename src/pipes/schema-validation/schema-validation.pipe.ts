@@ -4,16 +4,14 @@ import {
   PipeTransform,
   BadRequestException,
 } from '@nestjs/common';
-import { ObjectSchema } from 'joi';
+import { ObjectSchema, StringSchema } from 'joi';
 
 @Injectable()
 export class SchemaValidationPipe implements PipeTransform {
-  constructor(private schema: ObjectSchema) {}
+  constructor(private schema: ObjectSchema | StringSchema) {}
 
   transform(value: any, metadata: ArgumentMetadata) {
-    if (metadata.type !== 'body') {
-      return value;
-    }
+    if (!['body', 'query'].includes(metadata.type)) return value;
 
     const { error } = this.schema.validate(value);
     if (error) {

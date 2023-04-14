@@ -73,7 +73,10 @@ export class OrdersService {
     return this.orderRepository.save({ ...createOrderDto, status });
   }
 
-  findAll() {
+  findAll(status?: OrderStatus) {
+    if (status) {
+      return this.orderRepository.findBy({ status: status });
+    }
     return this.orderRepository.find();
   }
 
