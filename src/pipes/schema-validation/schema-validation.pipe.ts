@@ -1,10 +1,10 @@
+import { ObjectSchema, StringSchema } from 'joi';
 import {
   ArgumentMetadata,
   Injectable,
   PipeTransform,
   BadRequestException,
 } from '@nestjs/common';
-import { ObjectSchema, StringSchema } from 'joi';
 
 @Injectable()
 export class SchemaValidationPipe implements PipeTransform {

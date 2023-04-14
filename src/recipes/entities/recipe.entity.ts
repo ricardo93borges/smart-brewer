@@ -1,4 +1,12 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ObjectID,
+  ObjectIdColumn,
+  Unique,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export enum RecipeType {
   COFFEE = 'coffee',
@@ -18,6 +26,7 @@ export type RecipeIngredients = {
 };
 
 @Entity()
+@Unique(['name'])
 export class Recipe {
   @ObjectIdColumn()
   id: ObjectID;
@@ -33,4 +42,17 @@ export class Recipe {
 
   @Column()
   ingredients: RecipeIngredients[];
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UsePipes,
+  HttpCode,
 } from '@nestjs/common';
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
@@ -36,6 +37,7 @@ export class IngredientsController {
   }
 
   @Patch(':id')
+  @HttpCode(204)
   @UsePipes(new SchemaValidationPipe(createIngredientSchema))
   update(
     @Param('id', ParseObjectIdPipe) id: string,

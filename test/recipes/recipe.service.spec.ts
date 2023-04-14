@@ -53,6 +53,8 @@ describe('RecipesService', () => {
       const recipe = {
         ...createRecipeDto,
         id: new ObjectID('6436c2161056290e916b8678'),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const validateIngredientsSpy = jest

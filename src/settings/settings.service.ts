@@ -29,8 +29,8 @@ export class SettingsService {
     return this.settingsRepository.findOneBy({ name });
   }
 
-  update(id: ObjectID, updateSettingDto: UpdateSettingDto) {
-    return this.settingsRepository.update(id, updateSettingDto);
+  async update(id: ObjectID, updateSettingDto: UpdateSettingDto) {
+    await this.settingsRepository.update(id, updateSettingDto);
   }
 
   remove(id: ObjectID) {

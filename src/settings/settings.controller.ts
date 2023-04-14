@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UsePipes,
+  HttpCode,
 } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
@@ -36,6 +37,7 @@ export class SettingsController {
   }
 
   @Patch(':id')
+  @HttpCode(204)
   @UsePipes(new SchemaValidationPipe(createSettingsSchema))
   update(
     @Param('id', ParseObjectIdPipe) id: string,

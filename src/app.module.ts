@@ -20,9 +20,6 @@ import { OrdersModule } from './orders/orders.module';
       database: process.env.DATABASE_NAME,
       // ssl: true,
       autoLoadEntities: true,
-      // Only enable this option if your application is in development,
-      // otherwise use TypeORM migrations to sync entity schemas:
-      // https://typeorm.io/#/migrations
       // synchronize: true,
     }),
     IngredientsModule,

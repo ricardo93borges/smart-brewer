@@ -60,6 +60,8 @@ describe('OrdersService', () => {
         type: RecipeType.COFFEE,
         status: RecipeStatus.DISABLED,
         ingredients: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const findOneSpy = jest
@@ -80,6 +82,8 @@ describe('OrdersService', () => {
         type: RecipeType.COFFEE,
         status: RecipeStatus.ENABLED,
         ingredients: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const findOneSpy = jest
@@ -103,6 +107,8 @@ describe('OrdersService', () => {
         type: IngredientType.LIQUID,
         availableQuantity: 20,
         maxQuantity: 100,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
       const recipeId = '64342e031a1b721892473843';
       const recipe: Recipe = {
@@ -118,6 +124,8 @@ describe('OrdersService', () => {
             order: 1,
           },
         ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const findOneSpy = jest
@@ -139,6 +147,8 @@ describe('OrdersService', () => {
         type: IngredientType.LIQUID,
         availableQuantity: 30,
         maxQuantity: 100,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
       const recipeId = '64342e031a1b721892473843';
       const recipe: Recipe = {
@@ -154,6 +164,8 @@ describe('OrdersService', () => {
             order: 1,
           },
         ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const findOneSpy = jest
@@ -181,6 +193,8 @@ describe('OrdersService', () => {
         type: RecipeType.COFFEE,
         status: RecipeStatus.ENABLED,
         ingredients: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const order: Order = {
@@ -224,6 +238,8 @@ describe('OrdersService', () => {
         type: RecipeType.COFFEE,
         status: RecipeStatus.ENABLED,
         ingredients: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const order: Order = {

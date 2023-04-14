@@ -31,6 +31,8 @@ describe('IngredientsService', () => {
       const ingredient = {
         ...createIngredientDto,
         id: new ObjectID('64342e031a1b721892473843'),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const saveSpy = jest
@@ -54,6 +56,8 @@ describe('IngredientsService', () => {
           type: IngredientType.LIQUID,
           availableQuantity: 100,
           maxQuantity: 1000,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ];
 
@@ -78,6 +82,8 @@ describe('IngredientsService', () => {
         type: IngredientType.LIQUID,
         availableQuantity: 100,
         maxQuantity: 1000,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const findOneBySpy = jest
@@ -105,10 +111,9 @@ describe('IngredientsService', () => {
         .spyOn(ingredientRepository, 'update')
         .mockResolvedValueOnce({ raw: '', affected: 1, generatedMaps: [] });
 
-      const result = await ingredientsService.update(+id, updateIngredientDto);
+      await ingredientsService.update(+id, updateIngredientDto);
 
       expect(updateSpy).toHaveBeenCalledWith(+id, updateIngredientDto);
-      expect(result).toEqual({ raw: '', affected: 1, generatedMaps: [] });
     });
   });
 
